@@ -1,0 +1,14 @@
+langchain
+langgraph
+langchain-community
+langchain-core
+langchain-groq
+faiss-cpu
+streamlit
+tavily-python
+langsmith
+python-dotenv
+fastapi
+uvicorn
+pydantic
+pytest
