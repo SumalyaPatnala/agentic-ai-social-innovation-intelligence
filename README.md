@@ -1,6 +1,5 @@
 ---
 title: Agentic AI Social Innovation Intelligence
-emoji: 🧠
 colorFrom: blue
 colorTo: green
 sdk: gradio
