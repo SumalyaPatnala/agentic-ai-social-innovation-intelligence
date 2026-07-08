@@ -1,10 +1,11 @@
 ---
-title: Agentic AI News Intelligence System
+title: Agentic AI Social Innovation Intelligence
 emoji: 🧠
 colorFrom: blue
 colorTo: green
-sdk: streamlit
-sdk_version: 1.36.0
+sdk: gradio
+sdk_version: "5.0.0"
+python_version: "3.11"
 app_file: app.py
 pinned: false
 ---
