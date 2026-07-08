@@ -28,18 +28,24 @@ def run_agentic_ai(usecase, model_name, user_input, frequency):
         model = llm_config.get_llm_model()
 
         if model is None:
-            return "Error: Groq model could not be initialized. Please check GROQ_API_KEY and model name."
+            return "Error: Groq model could not be initialized."
 
         graph_builder = GraphBuilder(model)
         graph = graph_builder.setup_graph(usecase)
 
         if usecase == "Basic Chatbot":
+            if not user_input:
+                return "Please enter a message."
+
             result = graph.invoke({
                 "messages": [HumanMessage(content=user_input)]
             })
             return result["messages"][-1].content
 
         if usecase == "Chatbot with Web":
+            if not user_input:
+                return "Please enter a web search query."
+
             result = graph.invoke({
                 "messages": [HumanMessage(content=user_input)]
             })
@@ -69,31 +75,19 @@ def run_agentic_ai(usecase, model_name, user_input, frequency):
         return f"Error: {str(e)}"
 
 
-def toggle_inputs(usecase):
-    if usecase == "AI News":
-        return (
-            gr.update(visible=False),
-            gr.update(visible=True),
-        )
-
-    return (
-        gr.update(visible=True),
-        gr.update(visible=False),
-    )
-
-
 with gr.Blocks(title="Agentic AI Social Innovation Intelligence") as demo:
     gr.Markdown(
         """
         # Agentic AI Social Innovation Intelligence System
 
-        LangGraph-powered AI news, web intelligence, and SDG-focused social innovation analysis.
+        A LangGraph-based agentic AI system for chatbot, web search, and AI news summarization. 
+        Built with LangGraph, Groq, Tavily, and Gradio.
         """
     )
 
     usecase = gr.Dropdown(
         choices=["Basic Chatbot", "Chatbot with Web", "AI News"],
-        value="Basic Chatbot",
+        value="AI News",
         label="Select Use Case"
     )
 
@@ -108,27 +102,19 @@ with gr.Blocks(title="Agentic AI Social Innovation Intelligence") as demo:
 
     user_input = gr.Textbox(
         lines=4,
-        placeholder="Enter your message or web query",
-        label="Input",
-        visible=True
+        placeholder="For chatbot/web search, enter your message or query here.",
+        label="Input"
     )
 
     frequency = gr.Dropdown(
         choices=["Daily", "Weekly", "Monthly"],
         value="Weekly",
-        label="Select Time Frame",
-        visible=False
+        label="AI News Time Frame"
     )
 
-    submit_btn = gr.Button("Run Agent")
+    submit_btn = gr.Button("Submit")
 
     output = gr.Markdown(label="Agent Output")
-
-    usecase.change(
-        fn=toggle_inputs,
-        inputs=usecase,
-        outputs=[user_input, frequency],
-    )
 
     submit_btn.click(
         fn=run_agentic_ai,
