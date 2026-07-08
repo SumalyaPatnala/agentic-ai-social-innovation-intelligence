@@ -1,3 +1,14 @@
+---
+title: Agentic AI News Intelligence System
+emoji: 🧠
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: 1.36.0
+app_file: app.py
+pinned: false
+---
+
 # Agentic AI News Intelligence System
 
 A production-style Agentic AI application for source-grounded news summarization using LangGraph, LangChain, Tavily Search, FastAPI, Streamlit, and LangSmith.
