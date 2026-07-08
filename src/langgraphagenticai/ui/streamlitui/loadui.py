@@ -17,24 +17,39 @@ class LoadStreamlitUI:
         self.user_controls = {}
 
     def load_streamlit_ui(self):
+        """
+        Loads all Streamlit UI controls.
+        Returns:
+            dict: User-selected LLM, model, use case, and API keys.
+        """
+
+        # Page setup
         st.set_page_config(
             page_title=self.config.get_page_title(),
             layout="wide",
         )
 
-        st.header(self.config.get_page_title())
-        st.session_state.time_frame = ''
-        st.session_state.IsFetchButtonClicked = False
+        st.title(self.config.get_page_title())
+        st.caption(self.config.get_page_caption())
+
+        # Initialize session state safely
+        if "timeframe" not in st.session_state:
+            st.session_state.timeframe = ""
+
+        if "IsFetchButtonClicked" not in st.session_state:
+            st.session_state.IsFetchButtonClicked = False
 
         with st.sidebar:
             llm_options = self.config.get_llm_options()
             usecase_options = self.config.get_usecase_options()
 
+            # LLM selection
             self.user_controls["selected_llm"] = st.selectbox(
                 "Select LLM",
                 llm_options,
             )
 
+            # Groq model and API key
             if self.user_controls["selected_llm"] == "Groq":
                 model_options = self.config.get_groq_model_options()
 
@@ -62,12 +77,16 @@ class LoadStreamlitUI:
                             "Don't have one? Refer: https://console.groq.com/keys"
                         )
 
+            # Use case selection
             self.user_controls["selected_usecase"] = st.selectbox(
                 "Select UseCases",
                 usecase_options,
             )
 
-            if self.user_controls["selected_usecase"] == "Chatbot with Web" or self.user_controls["selected_usecase"] == "AI NEWS":
+            selected_usecase = self.user_controls["selected_usecase"]
+
+            # Tavily API key for web/news use cases
+            if selected_usecase in ["Chatbot with Web", "AI News"]:
                 tavily_key_from_env = os.getenv("TAVILY_API_KEY", "")
 
                 if tavily_key_from_env:
@@ -86,17 +105,19 @@ class LoadStreamlitUI:
                             "Please enter your TAVILY_API_KEY. "
                             "Don't have one? Refer: https://app.tavily.com/home"
                         )
-            if self.user_controls["selected_usecase"] == "AI News":
-                st.subheader("AI News Explorer ")
 
-                with st.sidebar:
-                    time_frame = st.selectbox(
-                        "Select Time Frame",
-                        ["Daily", "Weekly", "Monthly"],
-                        index = 0
-                    )
-                if st.button("Fetch Latest AI News", use_container_width = True):
+            # AI News controls
+            if selected_usecase == "AI News":
+                st.subheader("AI News Intelligence")
+
+                time_frame = st.selectbox(
+                    "Select Time Frame",
+                    ["Daily", "Weekly", "Monthly"],
+                    index=1,
+                )
+
+                if st.button("Fetch Latest AI News", use_container_width=True):
                     st.session_state.IsFetchButtonClicked = True
-                    st.session_state.timeframe = time_frame
+                    st.session_state.timeframe = time_frame.lower()
 
         return self.user_controls
